@@ -18,9 +18,9 @@ export default function ThemeToggle() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-slate-400">亮</span>
+      <span className="text-xs text-muted-foreground">亮</span>
       <Switch checked={isDark} onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')} />
-      <span className="text-xs text-slate-400">暗</span>
+      <span className="text-xs text-muted-foreground">暗</span>
     </div>
   );
 }

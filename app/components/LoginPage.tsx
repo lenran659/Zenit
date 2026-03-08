@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import ThemeToggle from '@/components/theme-toggle';
 
 type NodeStatus = {
   nodeId: string;
@@ -67,6 +68,9 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_20%_10%,rgba(34,211,238,0.18),transparent_50%),radial-gradient(900px_circle_at_80%_70%,rgba(59,130,246,0.14),transparent_55%)]" />
 
       <div className="relative w-full max-w-sm">
+        <div className="flex justify-end mb-3">
+          <ThemeToggle />
+        </div>
         <Card className="bg-card/70 backdrop-blur-xl border-border shadow-2xl">
           <CardHeader>
             <CardTitle>Zenit</CardTitle>
