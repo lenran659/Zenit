@@ -40,8 +40,8 @@ export default function KanbanBoard() {
           onDrop={() => handleDrop(column.status)}
         >
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-slate-400 text-sm font-medium">{column.label}</h3>
-            <span className="px-2 py-0.5 bg-slate-800 rounded text-xs text-slate-400">
+            <h3 className="text-muted-foreground text-sm font-medium">{column.label}</h3>
+            <span className="px-2 py-0.5 bg-muted rounded text-xs text-muted-foreground">
               {column.count}
             </span>
           </div>

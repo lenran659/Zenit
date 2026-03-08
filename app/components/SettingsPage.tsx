@@ -2,6 +2,10 @@
 
 import { User, Bell, Palette, Shield, Database, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -138,99 +142,88 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm px-8 py-6">
-        <h1 className="text-2xl font-semibold text-white mb-1">设置</h1>
-        <p className="text-slate-400 text-sm">管理你的账户和偏好设置</p>
+      <header className="flex-shrink-0 border-b border-border bg-background/50 backdrop-blur-sm px-8 py-6">
+        <h1 className="text-2xl font-semibold mb-1">设置</h1>
+        <p className="text-muted-foreground text-sm">管理你的账户和偏好设置</p>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto px-8 py-6">
         <div className="max-w-4xl space-y-6">
           {settingSections.map((section, sectionIndex) => (
-            <div
-              key={sectionIndex}
-              className="bg-zinc-900 border border-slate-800 rounded-lg overflow-hidden"
-            >
-              {/* Section Header */}
-              <div className="flex items-center gap-4 p-6 border-b border-slate-800">
+            <Card key={sectionIndex}>
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0">
                 <div className={`w-12 h-12 rounded-lg ${section.bg} flex items-center justify-center`}>
                   <section.icon size={24} className={section.color} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-white">{section.title}</h2>
-                  <p className="text-sm text-slate-400">{section.description}</p>
+                  <CardTitle className="text-lg">{section.title}</CardTitle>
+                  <div className="text-sm text-muted-foreground">{section.description}</div>
                 </div>
-              </div>
+              </CardHeader>
 
-              {/* Section Items */}
-              <div className="divide-y divide-slate-800">
-                {section.items.map((item, itemIndex) => (
-                  <div key={itemIndex} className="p-6 flex items-center justify-between">
-                    <span className="text-slate-300">{item.label}</span>
-                    
-                    {item.type === 'toggle' && (
-                      <button
-                        onClick={() => updateSetting(item.key, !item.value)}
-                        className={`relative w-12 h-6 rounded-full transition-colors ${
-                          item.value ? 'bg-cyan-500' : 'bg-slate-700'
-                        }`}
-                      >
-                        <div
-                          className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                            item.value ? 'translate-x-7' : 'translate-x-1'
-                          }`}
-                        ></div>
-                      </button>
-                    )}
+              <CardContent className="p-0">
+                <div className="divide-y divide-border">
+                  {section.items.map((item, itemIndex) => (
+                    <div key={itemIndex} className="p-6 flex items-center justify-between gap-4">
+                      <span className="text-sm text-foreground">{item.label}</span>
 
-                    {item.type === 'text' && (
-                      <input
-                        type="text"
-                        value={item.value as string}
-                        onChange={(e) => updateSetting(item.key, e.target.value)}
-                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
-                      />
-                    )}
+                      {item.type === 'toggle' && (
+                        <Switch
+                          checked={Boolean(item.value)}
+                          onCheckedChange={(checked) => updateSetting(item.key, checked)}
+                        />
+                      )}
 
-                    {item.type === 'select' && 'options' in item && (
-                      <select
-                        value={item.value as string}
-                        onChange={(e) => updateSetting(item.key, e.target.value)}
-                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer"
-                      >
-                        {item.options?.map((option: { value: string; label: string }) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+                      {item.type === 'text' && (
+                        <Input
+                          type="text"
+                          value={item.value as string}
+                          onChange={(e) => updateSetting(item.key, e.target.value)}
+                          className="max-w-xs"
+                        />
+                      )}
+
+                      {item.type === 'select' && 'options' in item && (
+                        <select
+                          value={item.value as string}
+                          onChange={(e) => updateSetting(item.key, e.target.value)}
+                          className="h-10 px-3 rounded-md border border-input bg-background text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          {item.options?.map((option: { value: string; label: string }) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           ))}
 
           {/* Danger Zone */}
-          <div className="bg-zinc-900 border border-red-900/50 rounded-lg overflow-hidden">
-            <div className="flex items-center gap-4 p-6 border-b border-red-900/50">
+          <Card className="border-destructive/30">
+            <CardHeader className="flex flex-row items-center gap-4 space-y-0 border-b border-destructive/30">
               <div className="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center">
                 <Zap size={24} className="text-red-500" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">危险区域</h2>
-                <p className="text-sm text-slate-400">不可逆的操作</p>
+                <CardTitle className="text-lg">危险区域</CardTitle>
+                <div className="text-sm text-muted-foreground">不可逆的操作</div>
               </div>
-            </div>
-            <div className="p-6 space-y-4">
-              <button className="w-full px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/50 text-red-500 rounded font-medium text-sm transition-colors">
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <Button variant="destructive" className="w-full">
                 导出所有数据
-              </button>
-              <button className="w-full px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/50 text-red-500 rounded font-medium text-sm transition-colors">
+              </Button>
+              <Button variant="destructive" className="w-full">
                 删除账户
-              </button>
-            </div>
-          </div>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

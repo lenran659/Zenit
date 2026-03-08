@@ -71,7 +71,7 @@ export default function IssueTimeline({ issues, users }: Props) {
 
   if (!range) {
     return (
-      <div className="border border-slate-800 bg-zinc-900 rounded-lg p-8 text-center text-slate-500">
+      <div className="border border-border bg-background rounded-lg p-8 text-center text-muted-foreground">
         暂无 Issues
       </div>
     );
@@ -80,19 +80,19 @@ export default function IssueTimeline({ issues, users }: Props) {
   const totalDays = Math.max(1, Math.round((range.end.getTime() - range.start.getTime()) / 86400000));
 
   return (
-    <div className="border border-slate-800 rounded-lg overflow-hidden bg-zinc-900">
-      <div className="border-b border-slate-800 bg-zinc-900/60 px-4 py-3">
-        <div className="text-slate-400 text-sm">Timeline（按周）</div>
+    <div className="border border-border rounded-lg overflow-hidden bg-background">
+      <div className="border-b border-border bg-muted/40 px-4 py-3">
+        <div className="text-muted-foreground text-sm">Timeline（按周）</div>
       </div>
 
       <div className="overflow-x-auto">
         <div className="min-w-[1100px]">
           <div className="grid" style={{ gridTemplateColumns: `320px repeat(${range.weeks.length}, 1fr)` }}>
-            <div className="px-4 py-3 text-xs text-slate-500 border-b border-slate-800">Issue</div>
+            <div className="px-4 py-3 text-xs text-muted-foreground border-b border-border">Issue</div>
             {range.weeks.map((w) => (
               <div
                 key={w.toISOString()}
-                className="px-3 py-3 text-xs text-slate-500 border-b border-slate-800"
+                className="px-3 py-3 text-xs text-muted-foreground border-b border-border"
               >
                 {w.toISOString().slice(0, 10)}
               </div>
@@ -109,13 +109,13 @@ export default function IssueTimeline({ issues, users }: Props) {
 
               return (
                 <Fragment key={i.id}>
-                  <div className="px-4 py-3 border-b border-slate-800">
-                    <div className="text-white text-sm truncate">{i.title}</div>
-                    <div className="text-xs text-slate-500 mt-1 truncate">
+                  <div className="px-4 py-3 border-b border-border">
+                    <div className="text-foreground text-sm truncate">{i.title}</div>
+                    <div className="text-xs text-muted-foreground mt-1 truncate">
                       {i.type.toUpperCase()} · {assignee ?? '-'}
                     </div>
                   </div>
-                  <div className="relative border-b border-slate-800 col-span-full" style={{ gridColumn: `2 / span ${range.weeks.length}` }}>
+                  <div className="relative border-b border-border col-span-full" style={{ gridColumn: `2 / span ${range.weeks.length}` }}>
                     <div className="relative h-12">
                       <div
                         className={`absolute top-3 h-6 rounded ${i.type === 'bug' ? 'bg-red-500/25 border border-red-500/40' : 'bg-cyan-500/20 border border-cyan-500/40'}`}

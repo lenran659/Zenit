@@ -7,17 +7,20 @@ import { useProjectStore } from '../../../../hooks/useProjectStore';
 
 export default function ProjectIssuesPage() {
   const params = useParams<{ projectId: string }>();
-  const { projects, setCurrentProjectId } = useProjectStore();
+  const { projects, currentProjectId, setCurrentProjectId } = useProjectStore();
+
+  const projectId = typeof params?.projectId === 'string' ? params.projectId : '';
 
   useEffect(() => {
-    const projectId = params?.projectId;
-    if (!projectId || typeof projectId !== 'string') return;
+    if (!projectId) return;
+
+    if (currentProjectId === projectId) return;
 
     const exists = projects.some(p => p.id === projectId);
     if (!exists) return;
 
     setCurrentProjectId(projectId);
-  }, [params, projects, setCurrentProjectId]);
+  }, [currentProjectId, projectId, projects, setCurrentProjectId]);
 
   return <Dashboard />;
 }

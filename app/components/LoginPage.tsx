@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 type NodeStatus = {
   nodeId: string;
@@ -64,59 +67,56 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_20%_10%,rgba(34,211,238,0.18),transparent_50%),radial-gradient(900px_circle_at_80%_70%,rgba(59,130,246,0.14),transparent_55%)]" />
 
       <div className="relative w-full max-w-sm">
-        <div className="bg-zinc-900/70 backdrop-blur-xl border border-slate-800 rounded-lg shadow-2xl">
-          <div className="px-6 pt-6 pb-4">
-            <div className="text-white text-xl font-semibold">Zenit</div>
-            <div className="text-slate-400 text-sm mt-1">登录到你的私有节点</div>
-          </div>
+        <Card className="bg-zinc-900/70 backdrop-blur-xl border-slate-800 shadow-2xl">
+          <CardHeader>
+            <CardTitle>Zenit</CardTitle>
+            <CardDescription>登录到你的私有节点</CardDescription>
+          </CardHeader>
 
-          <form onSubmit={submit} className="px-6 pb-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs text-slate-400">用户名</label>
-              <input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
-                placeholder="例如: Alice"
-                autoComplete="username"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs text-slate-400">密码</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
-                placeholder="MVP 默认密码: zenit"
-                autoComplete="current-password"
-              />
-            </div>
-
-            {error && (
-              <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
-                {error}
+          <CardContent>
+            <form onSubmit={submit} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs text-slate-400">用户名</label>
+                <Input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="例如: Alice"
+                  autoComplete="username"
+                />
               </div>
-            )}
 
-            <button
-              type="submit"
-              className="w-full px-4 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded font-medium text-sm transition-colors"
-            >
-              登录
-            </button>
-          </form>
+              <div className="space-y-2">
+                <label className="text-xs text-slate-400">密码</label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="MVP 默认密码: zenit"
+                  autoComplete="current-password"
+                />
+              </div>
 
-          <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-between text-xs">
+              {error && (
+                <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
+                  {error}
+                </div>
+              )}
+
+              <Button type="submit" className="w-full">
+                登录
+              </Button>
+            </form>
+          </CardContent>
+
+          <CardFooter className="border-t border-slate-800 flex items-center justify-between text-xs">
             <div className="text-slate-500">
               节点: <span className="text-slate-300">{node.nodeId}</span>
             </div>
             <div className={node.status === 'running' ? 'text-green-400' : 'text-red-400'}>
               {node.status === 'running' ? '运行中' : '已停止'}
             </div>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

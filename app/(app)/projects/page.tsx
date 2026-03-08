@@ -4,9 +4,15 @@ import { useMemo, useState } from 'react';
 import { Plus, Trash2, Pencil, CheckCircle2 } from 'lucide-react';
 import { useProjectStore } from '../../hooks/useProjectStore';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function ProjectsPage() {
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const {
     projects,
     currentProjectId,
@@ -62,20 +68,17 @@ export default function ProjectsPage() {
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
-      <header className="flex-shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm">
+      <header className="flex-shrink-0 border-b border-border bg-background/50 backdrop-blur-sm">
         <div className="px-8 py-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-white mb-1">Project Hub</h1>
-            <p className="text-slate-400 text-sm">项目登记与配置</p>
+            <h1 className="text-2xl font-semibold mb-1">Project Hub</h1>
+            <p className="text-muted-foreground text-sm">项目登记与配置</p>
           </div>
 
-          <button
-            onClick={() => setCreating(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded font-medium text-sm transition-colors"
-          >
+          <Button onClick={() => setCreating(true)}>
             <Plus size={18} />
             新建项目
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -84,176 +87,199 @@ export default function ProjectsPage() {
           <div className="lg:col-span-2 space-y-4">
             {projects.map((p) => {
               const active = p.id === currentProjectId;
+              const MotionCard = motion.create(Card);
               return (
-                <div
+                <MotionCard
                   key={p.id}
-                  className={`border rounded-lg p-5 bg-zinc-900 ${
-                    active ? 'border-cyan-500/60' : 'border-slate-800'
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setCurrentProjectId(p.id)}
+                  onDoubleClick={() => {
+                    setCurrentProjectId(p.id);
+                    router.push(`/projects/${p.id}/issues`);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setCurrentProjectId(p.id);
+                      router.push(`/projects/${p.id}/issues`);
+                    }
+                  }}
+                  className={`cursor-pointer outline-none ${
+                    active
+                      ? 'border-primary/60 ring-1 ring-primary/20'
+                      : 'hover:border-muted-foreground/30'
                   }`}
+                  layout
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  transition={reduceMotion ? { duration: 0 } : { duration: 0.18, delay: Math.min(0.25, projects.indexOf(p) * 0.03) }}
+                  whileHover={reduceMotion ? undefined : { scale: 1.01 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.99 }}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-semibold">
-                          {p.key.slice(0, 2)}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-white font-medium truncate">{p.name}</div>
-                          <div className="text-xs text-slate-500">Key: {p.key}</div>
+                  <CardHeader className="p-5">
+                    <CardTitle className="text-base flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center font-semibold">
+                            {p.key.slice(0, 2)}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-medium truncate">{p.name}</div>
+                            <div className="text-xs text-muted-foreground">Key: {p.key}</div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="mt-3 text-sm text-slate-400">
-                        {p.description || '暂无描述'}
-                      </div>
-                    </div>
+                      <div className="flex items-center gap-2">
+                        {!active ? (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCurrentProjectId(p.id);
+                              router.push(`/projects/${p.id}/issues`);
+                            }}
+                          >
+                            进入
+                          </Button>
+                        ) : (
+                          <div className="flex items-center gap-1 text-green-500 text-sm">
+                            <CheckCircle2 size={16} />
+                            当前
+                          </div>
+                        )}
 
-                    <div className="flex items-center gap-2">
-                      {!active ? (
-                        <button
-                          onClick={() => {
-                            setCurrentProjectId(p.id);
-                            router.push(`/projects/${p.id}/issues`);
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startEdit(p.id);
                           }}
-                          className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-sm"
+                          aria-label="edit"
                         >
-                          进入
-                        </button>
-                      ) : (
-                        <div className="flex items-center gap-1 text-green-400 text-sm">
-                          <CheckCircle2 size={16} />
-                          当前
-                        </div>
-                      )}
+                          <Pencil size={16} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startDelete(p.id);
+                          }}
+                          aria-label="delete"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
 
-                      <button
-                        onClick={() => startEdit(p.id)}
-                        className="p-2 hover:bg-slate-800 rounded"
-                        aria-label="edit"
-                      >
-                        <Pencil size={16} className="text-slate-400" />
-                      </button>
-                      <button
-                        onClick={() => startDelete(p.id)}
-                        className="p-2 hover:bg-slate-800 rounded"
-                        aria-label="delete"
-                      >
-                        <Trash2 size={16} className="text-slate-400" />
-                      </button>
+                  <CardContent className="px-5 pb-5 pt-0">
+                    <div className="text-sm text-muted-foreground">
+                      {p.description || '暂无描述'}
                     </div>
-                  </div>
+                  </CardContent>
 
                   {editingId === p.id && (
-                    <div className="mt-4 border-t border-slate-800 pt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="mx-5 mb-5 border-t border-border pt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <div className="text-xs text-slate-400 mb-1">名称</div>
-                        <input
+                        <div className="text-xs text-muted-foreground mb-1">名称</div>
+                        <Input
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
                         />
                       </div>
                       <div>
-                        <div className="text-xs text-slate-400 mb-1">描述</div>
-                        <input
+                        <div className="text-xs text-muted-foreground mb-1">描述</div>
+                        <Input
                           value={editDesc}
                           onChange={(e) => setEditDesc(e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
                         />
                       </div>
                       <div className="md:col-span-2 flex gap-2">
-                        <button
-                          onClick={saveEdit}
-                          className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded text-sm"
-                        >
+                        <Button onClick={saveEdit}>
                           保存
-                        </button>
-                        <button
-                          onClick={() => setEditingId(null)}
-                          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-sm"
-                        >
+                        </Button>
+                        <Button variant="secondary" onClick={() => setEditingId(null)}>
                           取消
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   )}
 
                   {deletingId === p.id && (
-                    <div className="mt-4 border-t border-slate-800 pt-4">
-                      <div className="text-sm text-slate-300 mb-2">
+                    <div className="mx-5 mb-5 border-t border-border pt-4">
+                      <div className="text-sm text-muted-foreground mb-2">
                         删除项目需要输入项目 Key 确认：
-                        <span className="text-white font-medium ml-1">{p.key}</span>
+                        <span className="text-foreground font-medium ml-1">{p.key}</span>
                       </div>
                       <div className="flex flex-col md:flex-row gap-2">
-                        <input
+                        <Input
                           value={deleteConfirmKey}
                           onChange={(e) => setDeleteConfirmKey(e.target.value)}
-                          className="flex-1 px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-red-500"
                           placeholder="输入项目 Key"
                         />
-                        <button
-                          onClick={confirmDelete}
-                          className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/40 text-red-400 rounded text-sm"
-                        >
+                        <Button variant="destructive" onClick={confirmDelete}>
                           确认删除
-                        </button>
-                        <button
-                          onClick={() => setDeletingId(null)}
-                          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-sm"
-                        >
+                        </Button>
+                        <Button variant="secondary" onClick={() => setDeletingId(null)}>
                           取消
-                        </button>
+                        </Button>
                       </div>
-                      <div className="text-xs text-slate-500 mt-2">会同时删除该项目下的 Issues/Cycles。</div>
+                      <div className="text-xs text-muted-foreground mt-2">会同时删除该项目下的 Issues/Cycles。</div>
                     </div>
                   )}
-                </div>
+                </MotionCard>
               );
             })}
 
             {projects.length === 0 && (
-              <div className="border border-slate-800 bg-zinc-900 rounded-lg p-8 text-center text-slate-400">
+              <Card className="p-8 text-center text-muted-foreground">
                 暂无项目
-              </div>
+              </Card>
             )}
           </div>
 
           <div className="space-y-4">
             {creating && (
-              <div className="border border-slate-800 bg-zinc-900 rounded-lg p-5">
-                <div className="text-white font-medium mb-4">新建项目</div>
+              <Card>
+                <CardHeader className="pb-0">
+                  <CardTitle className="text-base">新建项目</CardTitle>
+                </CardHeader>
+
+                <CardContent className="pt-4">
 
                 <div className="space-y-3">
                   <div>
-                    <div className="text-xs text-slate-400 mb-1">Key（唯一）</div>
-                    <input
+                    <div className="text-xs text-muted-foreground mb-1">Key（唯一）</div>
+                    <Input
                       value={newKey}
                       onChange={(e) => setNewKey(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
                       placeholder="例如: ZEN"
                     />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400 mb-1">名称</div>
-                    <input
+                    <div className="text-xs text-muted-foreground mb-1">名称</div>
+                    <Input
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500"
                       placeholder="例如: Zenit 项目管理"
                     />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400 mb-1">描述</div>
-                    <textarea
+                    <div className="text-xs text-muted-foreground mb-1">描述</div>
+                    <Textarea
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900/70 border border-slate-800 rounded text-white text-sm outline-none focus:border-cyan-500 min-h-24"
+                      className="min-h-24"
                       placeholder="一句话描述这个项目"
                     />
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <button
+                    <Button
                       onClick={() => {
                         createProject({ key: newKey, name: newName, description: newDesc });
                         setCreating(false);
@@ -261,34 +287,33 @@ export default function ProjectsPage() {
                         setNewName('');
                         setNewDesc('');
                       }}
-                      className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded text-sm"
                     >
                       创建
-                    </button>
-                    <button
-                      onClick={() => setCreating(false)}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-sm"
-                    >
+                    </Button>
+                    <Button variant="secondary" onClick={() => setCreating(false)}>
                       取消
-                    </button>
+                    </Button>
                   </div>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             )}
 
-            <div className="border border-slate-800 bg-zinc-900 rounded-lg p-5">
-              <div className="text-white font-medium">当前项目</div>
-              <div className="text-slate-400 text-sm mt-2">
+            <Card>
+              <CardHeader className="pb-0">
+                <CardTitle className="text-base">当前项目</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
                 {currentProject ? (
                   <>
-                    <div className="text-white">{currentProject.name}</div>
-                    <div className="text-slate-500 text-xs mt-1">Key: {currentProject.key}</div>
+                    <div className="text-foreground">{currentProject.name}</div>
+                    <div className="text-muted-foreground text-xs mt-1">Key: {currentProject.key}</div>
                   </>
                 ) : (
                   '未选择'
                 )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

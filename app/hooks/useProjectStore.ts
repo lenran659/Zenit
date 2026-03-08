@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import type { Issue, IssueStatus, Priority, Project, User, Cycle } from '../types';
 
 type ZenitState = {
@@ -204,9 +204,9 @@ export function useProjectStore() {
     return [...issueList].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
   };
 
-  const setCurrentProjectId = (projectId: string) => {
+  const setCurrentProjectId = useCallback((projectId: string) => {
     setState(prev => ({ ...prev, currentProjectId: projectId }));
-  };
+  }, []);
 
   const createProject = (input: { key: string; name: string; description: string; ownerId?: string }) => {
     const t = nowIso();

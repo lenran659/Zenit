@@ -3,6 +3,8 @@
 import { Home, Settings, Circle } from 'lucide-react';
 import { useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import ThemeToggle from '@/components/theme-toggle';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -12,6 +14,7 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
 
   const nodeId = useMemo(() => {
     if (typeof window === 'undefined') return 'node_unknown';
@@ -29,10 +32,10 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   ];
 
   return (
-    <aside
-      className={`fixed left-0 top-0 h-screen bg-zinc-900/80 backdrop-blur-xl border-r border-slate-800 transition-all duration-300 z-50 ${
-        collapsed ? 'w-16' : 'w-64'
-      }`}
+    <motion.aside
+      className="fixed left-0 top-0 h-screen bg-zinc-900/80 backdrop-blur-xl border-r border-border z-50"
+      animate={{ width: collapsed ? 64 : 256 }}
+      transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 30 }}
     >
       <div className="flex flex-col h-full p-4">
         {/* Logo */}
@@ -69,17 +72,20 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
         {/* Status Indicator */}
         <div className={`mt-auto pt-4 border-t border-slate-800 ${collapsed ? 'flex justify-center' : ''}`}>
-          <div className="flex items-center gap-2">
-            <Circle size={8} className="fill-green-500 text-green-500" />
-            {!collapsed && (
-              <div className="text-xs">
-                <div className="text-slate-400">{nodeId}</div>
-                <div className="text-slate-500">自托管</div>
-              </div>
-            )}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Circle size={8} className="fill-green-500 text-green-500" />
+              {!collapsed && (
+                <div className="text-xs">
+                  <div className="text-slate-400">{nodeId}</div>
+                  <div className="text-slate-500">自托管</div>
+                </div>
+              )}
+            </div>
+            {!collapsed && <ThemeToggle />}
           </div>
         </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 }
