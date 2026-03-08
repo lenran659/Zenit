@@ -4,29 +4,28 @@ import { TrendingUp, Clock, Target, Activity } from 'lucide-react';
 import { useProjectStore } from '../hooks/useProjectStore';
 
 export default function AnalyticsPage() {
-  const { tasks } = useProjectStore();
+  const { issues } = useProjectStore();
 
   // 业务逻辑：按状态统计
   const statusStats = {
-    backlog: tasks.filter(t => t.status === 'backlog').length,
-    todo: tasks.filter(t => t.status === 'todo').length,
-    inProgress: tasks.filter(t => t.status === 'in-progress').length,
-    review: tasks.filter(t => t.status === 'review').length,
-    done: tasks.filter(t => t.status === 'done').length,
+    backlog: issues.filter(i => i.status === 'backlog').length,
+    todo: issues.filter(i => i.status === 'todo').length,
+    inProgress: issues.filter(i => i.status === 'in_progress').length,
+    done: issues.filter(i => i.status === 'done').length,
   };
 
   // 业务逻辑：按优先级统计
   const priorityStats = {
-    urgent: tasks.filter(t => t.priority === 'urgent').length,
-    high: tasks.filter(t => t.priority === 'high').length,
-    medium: tasks.filter(t => t.priority === 'medium').length,
-    low: tasks.filter(t => t.priority === 'low').length,
+    urgent: issues.filter(i => i.priority === 'urgent').length,
+    high: issues.filter(i => i.priority === 'high').length,
+    medium: issues.filter(i => i.priority === 'medium').length,
+    low: issues.filter(i => i.priority === 'low').length,
   };
 
   // 业务逻辑：团队成员统计
-  const memberStats = tasks.reduce((acc, task) => {
-    if (task.assignee) {
-      acc[task.assignee] = (acc[task.assignee] || 0) + 1;
+  const memberStats = issues.reduce((acc, issue) => {
+    if (issue.assigneeId) {
+      acc[issue.assigneeId] = (acc[issue.assigneeId] || 0) + 1;
     }
     return acc;
   }, {} as Record<string, number>);
@@ -35,7 +34,7 @@ export default function AnalyticsPage() {
   const avgCompletionTime = '3.5';
 
   // 业务逻辑：本周完成任务数（模拟）
-  const weeklyCompleted = tasks.filter(t => t.status === 'done').length;
+  const weeklyCompleted = issues.filter(i => i.status === 'done').length;
 
   const metrics = [
     { 
@@ -113,20 +112,18 @@ export default function AnalyticsPage() {
             <h2 className="text-lg font-semibold text-white mb-6">任务状态分布</h2>
             <div className="space-y-4">
               {Object.entries(statusStats).map(([status, count]) => {
-                const total = tasks.length;
+                const total = issues.length;
                 const percentage = total > 0 ? (count / total) * 100 : 0;
                 const labels: Record<string, string> = {
                   backlog: '待办',
                   todo: '计划中',
                   inProgress: '进行中',
-                  review: '审核中',
                   done: '已完成'
                 };
                 const colors: Record<string, string> = {
                   backlog: 'bg-slate-500',
                   todo: 'bg-blue-500',
                   inProgress: 'bg-cyan-500',
-                  review: 'bg-orange-500',
                   done: 'bg-green-500'
                 };
                 
@@ -153,7 +150,7 @@ export default function AnalyticsPage() {
             <h2 className="text-lg font-semibold text-white mb-6">优先级分布</h2>
             <div className="space-y-4">
               {Object.entries(priorityStats).map(([priority, count]) => {
-                const total = tasks.length;
+                const total = issues.length;
                 const percentage = total > 0 ? (count / total) * 100 : 0;
                 const labels: Record<string, string> = {
                   urgent: '紧急',

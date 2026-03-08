@@ -2,33 +2,31 @@
 
 import { useState } from 'react';
 import TaskCard from './TaskCard';
-import { Task, Status } from '../types';
 import { useProjectStore } from '../hooks/useProjectStore';
 
 export default function KanbanBoard() {
-  const { tasks, updateTaskStatus } = useProjectStore();
-  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
+  const { issues, updateIssueStatus, users } = useProjectStore();
+  const [draggedIssue, setDraggedIssue] = useState<(typeof issues)[number] | null>(null);
 
-  const columns: { status: Status; label: string; count: number }[] = [
-    { status: 'backlog', label: '待办', count: tasks.filter(t => t.status === 'backlog').length },
-    { status: 'todo', label: '计划中', count: tasks.filter(t => t.status === 'todo').length },
-    { status: 'in-progress', label: '进行中', count: tasks.filter(t => t.status === 'in-progress').length },
-    { status: 'review', label: '审核中', count: tasks.filter(t => t.status === 'review').length },
-    { status: 'done', label: '已完成', count: tasks.filter(t => t.status === 'done').length },
+  const columns: { status: 'backlog' | 'todo' | 'in_progress' | 'done'; label: string; count: number }[] = [
+    { status: 'backlog', label: 'Backlog', count: issues.filter(i => i.status === 'backlog').length },
+    { status: 'todo', label: 'Todo', count: issues.filter(i => i.status === 'todo').length },
+    { status: 'in_progress', label: 'In Progress', count: issues.filter(i => i.status === 'in_progress').length },
+    { status: 'done', label: 'Done', count: issues.filter(i => i.status === 'done').length },
   ];
 
-  const handleDragStart = (task: Task) => {
-    setDraggedTask(task);
+  const handleDragStart = (issue: (typeof issues)[number]) => {
+    setDraggedIssue(issue);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
-  const handleDrop = (status: Status) => {
-    if (draggedTask) {
-      updateTaskStatus(draggedTask.id, status);
-      setDraggedTask(null);
+  const handleDrop = (status: (typeof columns)[number]['status']) => {
+    if (draggedIssue) {
+      updateIssueStatus(draggedIssue.id, status);
+      setDraggedIssue(null);
     }
   };
 
@@ -49,13 +47,14 @@ export default function KanbanBoard() {
           </div>
           
           <div className="space-y-3">
-            {tasks
-              .filter(task => task.status === column.status)
-              .map(task => (
+            {issues
+              .filter(issue => issue.status === column.status)
+              .map(issue => (
                 <TaskCard
-                  key={task.id}
-                  task={task}
-                  onDragStart={() => handleDragStart(task)}
+                  key={issue.id}
+                  issue={issue}
+                  users={users}
+                  onDragStart={() => handleDragStart(issue)}
                 />
               ))}
           </div>

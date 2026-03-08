@@ -1,20 +1,31 @@
 'use client';
 
-import { Home, CheckSquare, BarChart3, Settings, Circle } from 'lucide-react';
+import { Home, Settings, Circle } from 'lucide-react';
+import { useMemo } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface SidebarProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
 }
 
-export default function Sidebar({ currentPage, onPageChange, collapsed, setCollapsed }: SidebarProps) {
+export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const nodeId = useMemo(() => {
+    if (typeof window === 'undefined') return 'node_unknown';
+    const key = 'zenit:node_id:v1';
+    const existing = window.localStorage.getItem(key);
+    if (existing) return existing;
+    const created = `node_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+    window.localStorage.setItem(key, created);
+    return created;
+  }, []);
+
   const navItems = [
-    { icon: Home, label: '首页', page: 'home' },
-    { icon: CheckSquare, label: '任务', page: 'tasks' },
-    { icon: BarChart3, label: '分析', page: 'analytics' },
-    { icon: Settings, label: '设置', page: 'settings' },
+    { icon: Home, label: '项目', href: '/projects' },
+    { icon: Settings, label: '设置', href: '/settings' },
   ];
 
   return (
@@ -43,9 +54,9 @@ export default function Sidebar({ currentPage, onPageChange, collapsed, setColla
           {navItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => onPageChange(item.page)}
+              onClick={() => router.push(item.href)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded transition-all ${
-                currentPage === item.page
+                pathname === item.href || pathname.startsWith(`${item.href}/`)
                   ? 'bg-slate-800 text-white'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
               }`}
@@ -62,7 +73,7 @@ export default function Sidebar({ currentPage, onPageChange, collapsed, setColla
             <Circle size={8} className="fill-green-500 text-green-500" />
             {!collapsed && (
               <div className="text-xs">
-                <div className="text-slate-400">Node 01</div>
+                <div className="text-slate-400">{nodeId}</div>
                 <div className="text-slate-500">自托管</div>
               </div>
             )}

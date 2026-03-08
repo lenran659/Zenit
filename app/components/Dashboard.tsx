@@ -3,14 +3,18 @@
 import { Plus, Filter, Calendar } from 'lucide-react';
 import KanbanBoard from './KanbanBoard';
 import { useProjectStore } from '../hooks/useProjectStore';
+import { useState } from 'react';
+import IssueTable from './IssueTable';
+import IssueTimeline from './IssueTimeline';
 
 export default function Dashboard() {
-  const { currentProject, tasks } = useProjectStore();
+  const { currentProject, issues, users } = useProjectStore();
+  const [view, setView] = useState<'list' | 'kanban' | 'timeline'>('kanban');
 
   const stats = [
-    { label: '总任务', value: tasks.length, color: 'text-slate-400' },
-    { label: '进行中', value: tasks.filter(t => t.status === 'in-progress').length, color: 'text-cyan-500' },
-    { label: '已完成', value: tasks.filter(t => t.status === 'done').length, color: 'text-green-500' },
+    { label: '总任务', value: issues.length, color: 'text-slate-400' },
+    { label: '进行中', value: issues.filter(i => i.status === 'in_progress').length, color: 'text-cyan-500' },
+    { label: '已完成', value: issues.filter(i => i.status === 'done').length, color: 'text-green-500' },
   ];
 
   return (
@@ -47,6 +51,33 @@ export default function Dashboard() {
 
         {/* Filters */}
         <div className="px-8 py-3 flex items-center gap-3 border-t border-slate-800">
+          <div className="flex items-center gap-2 mr-2">
+            <button
+              onClick={() => setView('list')}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                view === 'list' ? 'bg-slate-700 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
+            >
+              表格
+            </button>
+            <button
+              onClick={() => setView('kanban')}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                view === 'kanban' ? 'bg-slate-700 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
+            >
+              看板
+            </button>
+            <button
+              onClick={() => setView('timeline')}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                view === 'timeline' ? 'bg-slate-700 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
+            >
+              甘特图
+            </button>
+          </div>
+
           <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-sm transition-colors">
             <Filter size={14} />
             筛选
@@ -58,9 +89,11 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Kanban Board */}
+      {/* Views */}
       <main className="flex-1 overflow-auto px-8 py-6">
-        <KanbanBoard />
+        {view === 'kanban' && <KanbanBoard />}
+        {view === 'list' && <IssueTable issues={issues} users={users} />}
+        {view === 'timeline' && <IssueTimeline issues={issues} users={users} />}
       </main>
     </div>
   );

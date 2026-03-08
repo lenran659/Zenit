@@ -1,11 +1,26 @@
 'use client';
 
 import { Search, Command } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CommandPalette() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const isK = e.key.toLowerCase() === 'k';
+      if ((e.metaKey || e.ctrlKey) && isK) {
+        e.preventDefault();
+        setIsOpen(prev => !prev);
+      }
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const searchResults = [
     { type: '任务', title: '设计系统架构', subtitle: 'in-progress' },
