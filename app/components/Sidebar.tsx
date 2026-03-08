@@ -33,7 +33,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
   return (
     <motion.aside
-      className="fixed left-0 top-0 h-screen bg-zinc-900/80 backdrop-blur-xl border-r border-border z-50"
+      className="fixed left-0 top-0 h-screen bg-background/80 backdrop-blur-xl border-r border-border z-50"
       animate={{ width: collapsed ? 64 : 256 }}
       transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 30 }}
     >
@@ -41,14 +41,14 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         {/* Logo */}
         <div className="mb-8 flex items-center justify-between">
           {!collapsed && (
-            <h1 className="text-xl font-semibold text-white">Zenit</h1>
+            <h1 className="text-xl font-semibold text-foreground">Zenit</h1>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 hover:bg-slate-800 rounded transition-colors"
+            className="p-2 hover:bg-accent rounded transition-colors"
           >
-            <div className="w-4 h-0.5 bg-slate-400 mb-1"></div>
-            <div className="w-4 h-0.5 bg-slate-400"></div>
+            <div className="w-4 h-0.5 bg-muted-foreground mb-1"></div>
+            <div className="w-4 h-0.5 bg-muted-foreground"></div>
           </button>
         </div>
 
@@ -60,8 +60,8 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               onClick={() => router.push(item.href)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded transition-all ${
                 pathname === item.href || pathname.startsWith(`${item.href}/`)
-                  ? 'bg-slate-800 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  ? 'bg-accent text-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
               }`}
             >
               <item.icon size={20} />
@@ -71,14 +71,14 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
         </nav>
 
         {/* Status Indicator */}
-        <div className={`mt-auto pt-4 border-t border-slate-800 ${collapsed ? 'flex justify-center' : ''}`}>
+        <div className={`mt-auto pt-4 border-t border-border ${collapsed ? 'flex justify-center' : ''}`}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Circle size={8} className="fill-green-500 text-green-500" />
               {!collapsed && (
                 <div className="text-xs">
-                  <div className="text-slate-400">{nodeId}</div>
-                  <div className="text-slate-500">自托管</div>
+                  <div className="text-muted-foreground">{nodeId}</div>
+                  <div className="text-muted-foreground/70">自托管</div>
                 </div>
               )}
             </div>

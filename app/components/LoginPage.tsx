@@ -63,11 +63,11 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-zinc-950">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-background">
       <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_20%_10%,rgba(34,211,238,0.18),transparent_50%),radial-gradient(900px_circle_at_80%_70%,rgba(59,130,246,0.14),transparent_55%)]" />
 
       <div className="relative w-full max-w-sm">
-        <Card className="bg-zinc-900/70 backdrop-blur-xl border-slate-800 shadow-2xl">
+        <Card className="bg-card/70 backdrop-blur-xl border-border shadow-2xl">
           <CardHeader>
             <CardTitle>Zenit</CardTitle>
             <CardDescription>登录到你的私有节点</CardDescription>
@@ -76,7 +76,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
           <CardContent>
             <form onSubmit={submit} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs text-slate-400">用户名</label>
+                <label className="text-xs text-muted-foreground">用户名</label>
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -86,7 +86,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs text-slate-400">密码</label>
+                <label className="text-xs text-muted-foreground">密码</label>
                 <Input
                   type="password"
                   value={password}
@@ -108,9 +108,9 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
             </form>
           </CardContent>
 
-          <CardFooter className="border-t border-slate-800 flex items-center justify-between text-xs">
-            <div className="text-slate-500">
-              节点: <span className="text-slate-300">{node.nodeId}</span>
+          <CardFooter className="border-t border-border flex items-center justify-between text-xs">
+            <div className="text-muted-foreground">
+              节点: <span className="text-foreground">{node.nodeId}</span>
             </div>
             <div className={node.status === 'running' ? 'text-green-400' : 'text-red-400'}>
               {node.status === 'running' ? '运行中' : '已停止'}
