@@ -6,6 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -142,7 +148,7 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 border-b border-border bg-background/50 backdrop-blur-sm px-8 py-6">
+      <header className="shrink-0 border-b border-border bg-background/50 backdrop-blur-sm px-8 py-6">
         <h1 className="text-2xl font-semibold mb-1">设置</h1>
         <p className="text-muted-foreground text-sm">管理你的账户和偏好设置</p>
       </header>
@@ -185,17 +191,32 @@ export default function SettingsPage() {
                       )}
 
                       {item.type === 'select' && 'options' in item && (
-                        <select
-                          value={item.value as string}
-                          onChange={(e) => updateSetting(item.key, e.target.value)}
-                          className="h-10 px-3 rounded-md border border-input bg-background text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          {item.options?.map((option: { value: string; label: string }) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-10 px-3 justify-between min-w-40"
+                            >
+                              {
+                                item.options?.find(
+                                  (option: { value: string; label: string }) => option.value === item.value
+                                )?.label ?? String(item.value)
+                              }
+                              <span className="text-muted-foreground">▾</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {item.options?.map((option: { value: string; label: string }) => (
+                              <DropdownMenuItem
+                                key={option.value}
+                                onSelect={() => updateSetting(item.key, option.value)}
+                              >
+                                {option.label}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </div>
                   ))}

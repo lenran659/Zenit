@@ -2,25 +2,32 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Switch } from '@/components/ui/switch';
+import { Moon, Sun } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   if (!mounted) return null;
 
-  const isDark = theme === 'dark';
+  const isDark = resolvedTheme === 'dark';
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-muted-foreground">亮</span>
-      <Switch checked={isDark} onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')} />
-      <span className="text-xs text-muted-foreground">暗</span>
-    </div>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label={isDark ? '切换到浅色模式' : '切换到深色模式'}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+    >
+      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    </Button>
   );
 }

@@ -54,7 +54,7 @@ export default function TaskCard({ issue, users, onDragStart, onDragEnd }: TaskC
       <div className="flex items-center justify-between text-xs">
         {assignee && (
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-medium text-xs">
+            <div className="w-6 h-6 rounded-full bg-linear-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-medium text-xs">
               {assignee.name[0]}
             </div>
             <span className="text-muted-foreground">{assignee.name}</span>
