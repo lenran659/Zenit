@@ -35,7 +35,7 @@ export default function KanbanBoard() {
       {columns.map((column) => (
         <div
           key={column.status}
-          className="flex-shrink-0 w-80"
+          className="shrink-0 w-80"
           onDragOver={handleDragOver}
           onDrop={() => handleDrop(column.status)}
         >

@@ -1,10 +1,11 @@
 'use client';
 
-import { Home, Settings, Circle } from 'lucide-react';
-import { useMemo } from 'react';
+import { Home, Settings, Circle, LayoutDashboard } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import ThemeToggle from '@/components/theme-toggle';
 import { motion, useReducedMotion } from 'framer-motion';
+import GlobalSearch from './GlobalSearch';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -16,17 +17,30 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
 
-  const nodeId = useMemo(() => {
-    if (typeof window === 'undefined') return 'node_unknown';
-    const key = 'zenit:node_id:v1';
-    const existing = window.localStorage.getItem(key);
-    if (existing) return existing;
-    const created = `node_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
-    window.localStorage.setItem(key, created);
-    return created;
+  const [nodeId, setNodeId] = useState('node_unknown');
+
+  useEffect(() => {
+    let id: number | null = null;
+    try {
+      const key = 'zenit:node_id:v1';
+      const existing = window.localStorage.getItem(key);
+      if (existing) {
+        id = window.setTimeout(() => setNodeId(existing), 0);
+        return;
+      }
+      const created = `node_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+      window.localStorage.setItem(key, created);
+      id = window.setTimeout(() => setNodeId(created), 0);
+    } catch {
+      // ignore
+    }
+    return () => {
+      if (id !== null) window.clearTimeout(id);
+    };
   }, []);
 
   const navItems = [
+    { icon: LayoutDashboard, label: '仪表盘', href: '/dashboard' },
     { icon: Home, label: '项目', href: '/projects' },
     { icon: Settings, label: '设置', href: '/settings' },
   ];
@@ -51,6 +65,12 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
             <div className="w-4 h-0.5 bg-muted-foreground"></div>
           </button>
         </div>
+
+        {!collapsed && (
+          <div className="mb-4">
+            <GlobalSearch />
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 space-y-2">

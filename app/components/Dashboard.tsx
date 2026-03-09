@@ -29,6 +29,7 @@ export default function Dashboard() {
         const isTyping =
           t?.tagName === 'INPUT' ||
           t?.tagName === 'TEXTAREA' ||
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (t as any)?.isContentEditable;
         if (isTyping) return;
         e.preventDefault();
@@ -48,7 +49,7 @@ export default function Dashboard() {
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 border-b border-border bg-background/50 backdrop-blur-sm">
+      <header className="shrink-0 border-b border-border bg-background/50 backdrop-blur-sm">
         <div className="px-8 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
