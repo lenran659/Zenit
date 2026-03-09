@@ -272,6 +272,7 @@ export function useProjectStore() {
     users: state.users,
     projects: state.projects,
     cycles: state.cycles,
+    allIssues: state.issues,
     currentProject,
     currentProjectId: state.currentProjectId,
     issues,

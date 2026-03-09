@@ -78,7 +78,7 @@ export default function AnalyticsPage() {
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm px-8 py-6">
+      <header className="shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm px-8 py-6">
         <h1 className="text-2xl font-semibold text-white mb-1">数据分析</h1>
         <p className="text-slate-400 text-sm">项目进度和团队效率分析</p>
       </header>
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Object.entries(memberStats).map(([member, count]) => (
                 <div key={member} className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-semibold text-xl">
+                  <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-linear-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-semibold text-xl">
                     {member[0]}
                   </div>
                   <div className="text-white font-medium mb-1">{member}</div>

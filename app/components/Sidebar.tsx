@@ -40,7 +40,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   }, []);
 
   const navItems = [
-    { icon: LayoutDashboard, label: '仪表盘', href: '/dashboard' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
     { icon: Home, label: '项目', href: '/projects' },
     { icon: Settings, label: '设置', href: '/settings' },
   ];

@@ -1,7 +1,7 @@
 'use client';
 
-import Dashboard from '../../components/Dashboard';
+import AppDashboard from '../../components/AppDashboard';
 
 export default function DashboardRoutePage() {
-  return <Dashboard />;
+  return <AppDashboard />;
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Dashboard from '../../../../components/Dashboard';
+import TaskManagement from '../../../../components/TaskManagement';
 import { useProjectStore } from '../../../../hooks/useProjectStore';
 
 export default function ProjectIssuesPage() {
@@ -22,5 +22,5 @@ export default function ProjectIssuesPage() {
     setCurrentProjectId(projectId);
   }, [currentProjectId, projectId, projects, setCurrentProjectId]);
 
-  return <Dashboard />;
+  return <TaskManagement />;
 }
