@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
-import { Home, Settings, Circle, LayoutDashboard } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import ThemeToggle from '@/components/theme-toggle';
-import { motion, useReducedMotion } from 'framer-motion';
-import GlobalSearch from './GlobalSearch';
+import { Home, Settings, Circle, LayoutDashboard } from "lucide-react";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import ThemeToggle from "@/components/theme-toggle";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -17,39 +16,32 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
 
-  const [nodeId, setNodeId] = useState('node_unknown');
-
   useEffect(() => {
-    let id: number | null = null;
     try {
-      const key = 'zenit:node_id:v1';
-      const existing = window.localStorage.getItem(key);
-      if (existing) {
-        id = window.setTimeout(() => setNodeId(existing), 0);
-        return;
-      }
+      const key = "zenit:node_id:v1";
+
       const created = `node_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
       window.localStorage.setItem(key, created);
-      id = window.setTimeout(() => setNodeId(created), 0);
     } catch {
       // ignore
     }
-    return () => {
-      if (id !== null) window.clearTimeout(id);
-    };
   }, []);
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-    { icon: Home, label: '项目', href: '/projects' },
-    { icon: Settings, label: '设置', href: '/settings' },
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: Home, label: "项目", href: "/projects" },
+    { icon: Settings, label: "设置", href: "/settings" },
   ];
 
   return (
     <motion.aside
       className="fixed left-0 top-0 h-screen bg-background/80 backdrop-blur-xl border-r border-border z-50"
       animate={{ width: collapsed ? 64 : 256 }}
-      transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 30 }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { type: "spring", stiffness: 260, damping: 30 }
+      }
     >
       <div className="flex flex-col h-full p-4">
         {/* Logo */}
@@ -66,12 +58,6 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
           </button>
         </div>
 
-        {!collapsed && (
-          <div className="mb-4">
-            <GlobalSearch />
-          </div>
-        )}
-
         {/* Navigation */}
         <nav className="flex-1 space-y-2">
           {navItems.map((item, index) => (
@@ -80,24 +66,27 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
               onClick={() => router.push(item.href)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded transition-all ${
                 pathname === item.href || pathname.startsWith(`${item.href}/`)
-                  ? 'bg-accent text-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               }`}
             >
               <item.icon size={20} />
-              {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+              {!collapsed && (
+                <span className="text-sm font-medium">{item.label}</span>
+              )}
             </button>
           ))}
         </nav>
 
         {/* Status Indicator */}
-        <div className={`mt-auto pt-4 border-t border-border ${collapsed ? 'flex justify-center' : ''}`}>
+        <div
+          className={`mt-auto pt-4 border-t border-border ${collapsed ? "flex justify-center" : ""}`}
+        >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Circle size={8} className="fill-green-500 text-green-500" />
               {!collapsed && (
                 <div className="text-xs">
-                  <div className="text-muted-foreground">{nodeId}</div>
                   <div className="text-muted-foreground/70">自托管</div>
                 </div>
               )}

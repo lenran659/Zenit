@@ -177,8 +177,8 @@ export default function ProjectsPage() {
       </header>
 
       <main className="flex-1 overflow-auto px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="gap-6">
+          <div className="space-y-4">
             {viewMode === 'card' ? (
               <>
                 {projects.map((p) => {
