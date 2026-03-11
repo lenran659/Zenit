@@ -14,6 +14,12 @@ export default function Home() {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
 
+  const borderSoft = 'border-border/60';
+  const cardBase = `bg-card/70 backdrop-blur ${borderSoft}`;
+  const cardStrong = `bg-card/80 backdrop-blur border-primary/30`;
+  const panelBase = `rounded-xl border ${borderSoft} bg-background/40`;
+  const panelStrong = `rounded-xl border ${borderSoft} bg-background/50`;
+
   const fadeUp = (delay = 0) =>
     reduceMotion
       ? {
@@ -25,6 +31,21 @@ export default function Home() {
           initial: { opacity: 0, y: 12 },
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.3, delay },
+        };
+
+  const viewFadeUp = (delay = 0) =>
+    reduceMotion
+      ? {
+          initial: false as const,
+          whileInView: { opacity: 1 },
+          viewport: { once: true, amount: 0.25 },
+          transition: { duration: 0 },
+        }
+      : {
+          initial: { opacity: 0, y: 14 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.25 },
+          transition: { duration: 0.38, delay },
         };
 
   useEffect(() => {
@@ -41,7 +62,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_15%_10%,rgba(34,211,238,0.16),transparent_55%),radial-gradient(900px_circle_at_80%_70%,rgba(59,130,246,0.12),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_18%_12%,rgba(139,92,246,0.16),transparent_55%),radial-gradient(900px_circle_at_82%_70%,rgba(59,130,246,0.10),transparent_55%)]" />
 
       <div className="relative mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <motion.header {...fadeUp(0)} className="flex items-center justify-between">
@@ -62,117 +83,115 @@ export default function Home() {
         </motion.header>
 
         <main>
-          <section className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <motion.div {...fadeUp(0.05)}>
-              <div className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                轻量协作 · Linear 风格交互 · 黑白主题
-              </div>
+          <section className="mt-14">
+            <div className="max-w-3xl mx-auto text-center">
+              <motion.div {...fadeUp(0.04)} className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
+                公告 · Zenit MVP 已上线
+              </motion.div>
 
-              <h1 className="mt-5 text-4xl lg:text-5xl font-semibold tracking-tight">
+              <motion.h1 {...fadeUp(0.08)} className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight">
                 把项目管理变成一种
-                <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                  顺滑的体验
-                </span>
-              </h1>
-              <p className="mt-4 text-muted-foreground text-base leading-relaxed">
-                Zenit 是一套极简的 SaaS 项目协作面板：Issues、看板、时间线一体化。团队从「开会」回到「交付」。
-              </p>
+                <span className="bg-linear-to-r from-violet-400 to-blue-500 bg-clip-text text-transparent">顺滑的体验</span>
+              </motion.h1>
 
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Button onClick={() => router.push('/login?next=/projects')}>免费开始</Button>
-                <Button variant="outline" onClick={() => router.push('/projects')}>
+              <motion.p {...fadeUp(0.12)} className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed">
+                Zenit 是一套极简的协作面板：Issues、看板、时间线一体化。团队从「开会」回到「交付」。
+              </motion.p>
+
+              <motion.div {...fadeUp(0.16)} className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Button onClick={() => router.push('/login?next=/projects')} className="min-w-40">
+                  免费开始
+                </Button>
+                <Button variant="outline" onClick={() => router.push('/projects')} className="min-w-40">
                   直接体验
                 </Button>
-              </div>
+              </motion.div>
 
-              <div className="mt-6 grid grid-cols-3 gap-4 text-sm">
-                <div className="rounded-xl border bg-background/40 px-4 py-3">
-                  <div className="text-lg font-semibold">10x</div>
-                  <div className="text-muted-foreground text-xs mt-1">更清晰的进度感</div>
-                </div>
-                <div className="rounded-xl border bg-background/40 px-4 py-3">
-                  <div className="text-lg font-semibold">2min</div>
-                  <div className="text-muted-foreground text-xs mt-1">上手时间</div>
-                </div>
-                <div className="rounded-xl border bg-background/40 px-4 py-3">
-                  <div className="text-lg font-semibold">0</div>
-                  <div className="text-muted-foreground text-xs mt-1">多余噪音</div>
-                </div>
-              </div>
-            </motion.div>
+              <motion.div {...fadeUp(0.2)} className="mt-3 text-xs text-muted-foreground">
+                无需信用卡 · 2 分钟上手
+              </motion.div>
+            </div>
 
-            <motion.div {...fadeUp(0.12)}>
-              <Card className="bg-card/70 backdrop-blur-xl">
-                <CardHeader>
-                  <CardTitle>项目控制台预览</CardTitle>
-                  <CardDescription>登录后会自动跳转到 Project Hub</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border bg-background/40 p-4">
-                      <div className="text-xs text-muted-foreground">待处理</div>
-                      <div className="mt-2 text-2xl font-semibold">12</div>
-                      <div className="mt-2 h-2 w-full rounded-full bg-muted">
-                        <div className="h-2 w-[55%] rounded-full bg-cyan-500" />
+            <motion.div
+              {...fadeUp(0.22)}
+              animate={
+                reduceMotion
+                  ? undefined
+                  : {
+                      y: [0, -6, 0],
+                    }
+              }
+              transition={reduceMotion ? { duration: 0 } : { duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="mt-12"
+            >
+              <Card className={`mx-auto max-w-5xl ${cardBase} shadow-2xl`}>
+                <CardContent className="p-0">
+                  <div className="relative overflow-hidden rounded-xl">
+                    <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_50%_30%,rgba(139,92,246,0.12),transparent_60%)]" />
+                    <div className="relative p-4 sm:p-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className={"p-4 " + panelBase}>
+                          <div className="text-xs text-muted-foreground">Inbox</div>
+                          <div className="mt-3 space-y-2">
+                            {[
+                              { t: '修复登录重定向', p: 'P0' },
+                              { t: '完善定价页文案', p: 'P1' },
+                              { t: '新增时间线视图', p: 'P2' },
+                            ].map((x) => (
+                              <div key={x.t} className="flex items-center justify-between rounded-lg border bg-background/50 px-3 py-2">
+                                <div className="text-sm truncate pr-3">{x.t}</div>
+                                <div className="text-xs text-muted-foreground">{x.p}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className={"p-4 lg:col-span-2 " + panelBase}>
+                          <div className="flex items-center justify-between">
+                            <div className="text-sm font-medium">项目概览</div>
+                            <div className="text-xs text-muted-foreground">Zenit Console</div>
+                          </div>
+
+                          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {[
+                              { k: '待处理', v: '12', bar: 'w-[58%]' },
+                              { k: '进行中', v: '8', bar: 'w-[42%]' },
+                              { k: '已完成', v: '31', bar: 'w-[76%]' },
+                            ].map((s) => (
+                              <div key={s.k} className={"p-4 " + panelStrong}>
+                                <div className="text-xs text-muted-foreground">{s.k}</div>
+                                <div className="mt-2 text-2xl font-semibold">{s.v}</div>
+                                <div className="mt-2 h-2 w-full rounded-full bg-muted">
+                                  <div className={`h-2 ${s.bar} rounded-full bg-violet-500`} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className={"mt-4 relative p-6 " + panelStrong}>
+                            <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                              <div className="h-14 w-14 rounded-full bg-red-500 shadow-lg grid place-items-center">
+                                <div className="ml-1 h-0 w-0 border-y-10 border-y-transparent border-l-16 border-l-white" />
+                              </div>
+                            </div>
+                            <div className="h-28 opacity-60" />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="rounded-xl border bg-background/40 p-4">
-                      <div className="text-xs text-muted-foreground">本周交付</div>
-                      <div className="mt-2 text-2xl font-semibold">8</div>
-                      <div className="mt-2 h-2 w-full rounded-full bg-muted">
-                        <div className="h-2 w-[70%] rounded-full bg-blue-500" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border bg-background/40 p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm font-medium">现在你该做什么？</div>
-                      <div className="text-xs text-muted-foreground">智能排序</div>
-                    </div>
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-center justify-between rounded-lg border bg-background/50 px-3 py-2">
-                        <div className="text-sm">修复登录重定向</div>
-                        <div className="text-xs text-muted-foreground">P0</div>
-                      </div>
-                      <div className="flex items-center justify-between rounded-lg border bg-background/50 px-3 py-2">
-                        <div className="text-sm">完善定价页文案</div>
-                        <div className="text-xs text-muted-foreground">P1</div>
-                      </div>
-                      <div className="flex items-center justify-between rounded-lg border bg-background/50 px-3 py-2">
-                        <div className="text-sm">新增时间线视图</div>
-                        <div className="text-xs text-muted-foreground">P2</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button className="flex-1" onClick={() => router.push('/login?next=/projects')}>
-                      立即登录
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      className="flex-1"
-                      onClick={() => router.push('/projects')}
-                    >
-                      浏览项目
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
           </section>
 
-          <section className="mt-16">
-            <motion.div {...fadeUp(0.05)} className="text-center">
-              <div className="text-xs text-muted-foreground">被这些团队的习惯所启发</div>
-              <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {['Product', 'Design', 'Growth', 'Engineering'].map((t) => (
-                  <div
-                    key={t}
-                    className="rounded-xl border bg-background/40 px-4 py-3 text-sm text-muted-foreground"
-                  >
+          <section className="mt-14">
+            <motion.div {...viewFadeUp(0)} className="text-center">
+              <div className="text-xs text-muted-foreground">TRUSTED BY LEADING TEAMS</div>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+                {['Microsoft', 'Amazon', 'Netflix', 'YouTube', 'Instagram', 'Uber', 'Spotify', 'Google'].map((t) => (
+                  <div key={t} className="opacity-70 hover:opacity-100 transition-opacity">
                     {t}
                   </div>
                 ))}
@@ -181,7 +200,7 @@ export default function Home() {
           </section>
 
           <section className="mt-16">
-            <motion.div {...fadeUp(0.06)} className="max-w-2xl">
+            <motion.div {...viewFadeUp(0.02)} className="max-w-2xl">
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">为速度而设计的核心功能</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 你需要的不是更多「功能」，而是更少阻力。Zenit 只做对交付最关键的部分。
@@ -202,15 +221,15 @@ export default function Home() {
                   title: '极简权限与空间',
                   desc: '项目空间天然隔离，避免“一个工作区装下全公司”的混乱。',
                 },
-              ].map((f) => (
-                <motion.div key={f.title} {...fadeUp(0.08)}>
-                  <Card className="h-full bg-card/70 backdrop-blur">
+              ].map((f, idx) => (
+                <motion.div key={f.title} {...viewFadeUp(0.02 + idx * 0.04)}>
+                  <Card className={"h-full " + cardBase}>
                     <CardHeader>
                       <CardTitle className="text-base">{f.title}</CardTitle>
                       <CardDescription className="leading-relaxed">{f.desc}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-10 w-10 rounded-xl border bg-background/40 flex items-center justify-center">
+                      <div className={"h-10 w-10 flex items-center justify-center " + panelBase}>
                         <svg
                           viewBox="0 0 24 24"
                           className="h-5 w-5 text-foreground"
@@ -233,7 +252,7 @@ export default function Home() {
 
           <section className="mt-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <motion.div {...fadeUp(0.06)}>
+              <motion.div {...viewFadeUp(0.02)}>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">把流程固化成默认动作</h2>
                 <p className="mt-3 text-muted-foreground leading-relaxed">
                   你不需要每天重新设计流程。Zenit 用「默认」帮你保持团队节奏：每个人都知道下一步要做什么。
@@ -245,7 +264,7 @@ export default function Home() {
                     { k: '执行', v: '关注当前要交付的事，而不是所有事。' },
                     { k: '复盘', v: '用数据回看节奏，持续优化迭代。' },
                   ].map((x) => (
-                    <div key={x.k} className="rounded-xl border bg-background/40 px-4 py-3">
+                    <div key={x.k} className={"px-4 py-3 " + panelBase}>
                       <div className="text-sm font-medium">{x.k}</div>
                       <div className="mt-1 text-sm text-muted-foreground">{x.v}</div>
                     </div>
@@ -253,8 +272,8 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              <motion.div {...fadeUp(0.12)}>
-                <Card className="bg-card/70 backdrop-blur">
+              <motion.div {...viewFadeUp(0.06)}>
+                <Card className={cardBase}>
                   <CardHeader>
                     <CardTitle className="text-base">一个 Sprint 的节奏</CardTitle>
                     <CardDescription>用最少步骤完成一次完整交付</CardDescription>
@@ -267,7 +286,7 @@ export default function Home() {
                         { step: '03', title: '移动看板', meta: '进行中 → 待验收' },
                         { step: '04', title: '关闭并记录', meta: '产出可复用的知识片段' },
                       ].map((s) => (
-                        <div key={s.step} className="flex gap-3 rounded-xl border bg-background/40 px-4 py-3">
+                        <div key={s.step} className={"flex gap-3 px-4 py-3 " + panelBase}>
                           <div className="w-10 shrink-0 text-sm font-semibold text-muted-foreground">
                             {s.step}
                           </div>
@@ -285,7 +304,7 @@ export default function Home() {
           </section>
 
           <section className="mt-16">
-            <motion.div {...fadeUp(0.06)} className="text-center">
+            <motion.div {...viewFadeUp(0.02)} className="text-center">
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">清晰的定价，按团队成长</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 先把流程跑起来，再决定是否升级。你也可以直接进入项目试用。
@@ -317,12 +336,12 @@ export default function Home() {
                   cta: { label: '联系销售', variant: 'outline' as const },
                 },
               ].map((p, idx) => (
-                <motion.div key={p.name} {...fadeUp(0.06 + idx * 0.04)}>
+                <motion.div key={p.name} {...viewFadeUp(0.02 + idx * 0.04)}>
                   <Card
                     className={
                       p.highlight
-                        ? 'h-full bg-card/80 backdrop-blur border-foreground/20'
-                        : 'h-full bg-card/70 backdrop-blur'
+                        ? `h-full ${cardStrong}`
+                        : `h-full ${cardBase}`
                     }
                   >
                     <CardHeader>
@@ -347,7 +366,7 @@ export default function Home() {
                       <div className="space-y-2">
                         {p.features.map((f) => (
                           <div key={f} className="flex items-start gap-2 text-sm">
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
+                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
                             <span className="text-muted-foreground">{f}</span>
                           </div>
                         ))}
@@ -375,7 +394,7 @@ export default function Home() {
           </section>
 
           <section className="mt-16">
-            <motion.div {...fadeUp(0.06)} className="text-center">
+            <motion.div {...viewFadeUp(0.02)} className="text-center">
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">用户怎么说</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 “少即是多”在协作里不是口号，而是每天更少的打断。
@@ -400,8 +419,8 @@ export default function Home() {
                   title: 'Designer',
                 },
               ].map((t, idx) => (
-                <motion.div key={t.name} {...fadeUp(0.08 + idx * 0.04)}>
-                  <Card className="h-full bg-card/70 backdrop-blur">
+                <motion.div key={t.name} {...viewFadeUp(0.02 + idx * 0.04)}>
+                  <Card className={"h-full " + cardBase}>
                     <CardHeader>
                       <CardTitle className="text-base">“{t.quote}”</CardTitle>
                       <CardDescription>
@@ -429,15 +448,15 @@ export default function Home() {
           </section>
 
           <section className="mt-16">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <motion.div {...fadeUp(0.06)}>
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">常见问题</h2>
-                <p className="mt-3 text-muted-foreground leading-relaxed">
+            <div className="flex flex-col gap-4">
+              <motion.div {...viewFadeUp(0.02)}>
+                <h2 className="text-2xl text-center sm:text-3xl font-semibold tracking-tight">常见问题</h2>
+                <p className="mt-3 text-center text-muted-foreground leading-relaxed">
                   如果你想把它真正做成一个商业化 SaaS，我也可以帮你补齐注册、计费、订阅与控制台信息架构。
                 </p>
               </motion.div>
 
-              <motion.div {...fadeUp(0.12)} className="space-y-3">
+              <motion.div {...viewFadeUp(0.06)} className="space-y-3">
                 {[
                   {
                     q: 'Zenit 适合什么团队？',
@@ -452,7 +471,7 @@ export default function Home() {
                     a: '可以。你可以点击“直接体验”进入项目页面；如果已有会话会自动跳转。',
                   },
                 ].map((x) => (
-                  <details key={x.q} className="group rounded-xl border bg-background/40 px-4 py-3">
+                  <details key={x.q} className={"group px-4 py-3 " + panelBase}>
                     <summary className="cursor-pointer list-none text-sm font-medium flex items-center justify-between">
                       <span>{x.q}</span>
                       <span className="text-muted-foreground group-open:rotate-45 transition-transform">+</span>
@@ -465,8 +484,8 @@ export default function Home() {
           </section>
 
           <section className="mt-16">
-            <motion.div {...fadeUp(0.06)}>
-              <Card className="bg-card/70 backdrop-blur">
+            <motion.div {...viewFadeUp(0.02)}>
+              <Card className={cardBase}>
                 <CardContent className="py-10 sm:py-12">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div>
