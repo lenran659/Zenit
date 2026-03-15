@@ -29,15 +29,17 @@ RUN npm install -g pnpm
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# 复制必要文件
+# 复制必要文件（包括数据库迁移和配置）
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/pnpm-lock.yaml ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/lib/db ./lib/db
+COPY --from=builder /app/drizzle.config.ts ./
 
-# 只安装生产依赖
-RUN pnpm install --frozen-lockfile --prod
+# 安装所有依赖（包含 drizzle-kit 用于迁移）
+RUN pnpm install --frozen-lockfile
 
 EXPOSE 3000
 

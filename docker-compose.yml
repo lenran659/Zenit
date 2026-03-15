@@ -31,9 +31,11 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3001}
-      # 如果 Next.js 需要直接连数据库（使用 API Routes）
       - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
+      # AI 配置（可选）
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
@@ -41,6 +43,9 @@ services:
         condition: service_healthy
     networks:
       - zenit-network
+    # 添加迁移命令（首次启动时运行）
+    command: >
+      sh -c "npx drizzle-kit migrate && pnpm start"
 
   # 可选：如果你有后端 API 服务，取消注释下面部分
   # backend:
