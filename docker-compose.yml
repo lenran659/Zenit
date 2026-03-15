@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16-alpine
+    container_name: zenit-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-zenit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zenit_password}
+      POSTGRES_DB: ${POSTGRES_DB:-zenit_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zenit} -d ${POSTGRES_DB:-zenit_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zenit-network
+
+  # Next.js 前端
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zenit-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      # 如果 Next.js 需要直接连数据库（使用 API Routes）
+      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - zenit-network
+
+  # 可选：如果你有后端 API 服务，取消注释下面部分
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: zenit-backend
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public
+  #     - PORT=3001
+  #   ports:
+  #     - "${BACKEND_PORT:-3001}:3001"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - zenit-network
+
+volumes:
+  postgres_data:
+    name: zenit-postgres-data
+
+networks:
+  zenit-network:
+    name: zenit-network
+    driver: bridge
