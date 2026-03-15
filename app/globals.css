@@ -122,3 +122,26 @@ body {
   transition-duration: 150ms;
 }
 
+@keyframes border-beam {
+  0% {
+    --border-beam-x: -20%;
+    --border-beam-y: -20%;
+  }
+  25% {
+    --border-beam-x: 120%;
+    --border-beam-y: -20%;
+  }
+  50% {
+    --border-beam-x: 120%;
+    --border-beam-y: 120%;
+  }
+  75% {
+    --border-beam-x: -20%;
+    --border-beam-y: 120%;
+  }
+  100% {
+    --border-beam-x: -20%;
+    --border-beam-y: -20%;
+  }
+}
+

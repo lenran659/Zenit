@@ -58,7 +58,7 @@ export default function HomePage() {
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm px-8 py-6">
+      <header className="shrink-0 border-b border-slate-800 bg-zinc-900/50 backdrop-blur-sm px-8 py-6">
         <h1 className="text-2xl font-semibold text-white mb-1">欢迎回来</h1>
         <p className="text-slate-400 text-sm">这是你今天的工作概览</p>
       </header>
@@ -139,7 +139,7 @@ export default function HomePage() {
               </div>
               <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500"
+                  className="h-full bg-linear-to-r from-cyan-500 to-blue-600 transition-all duration-500"
                   style={{ width: `${completionRate}%` }}
                 ></div>
               </div>

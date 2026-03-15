@@ -38,9 +38,9 @@ function writeState(state: ZenitState) {
 }
 
 function seedState(): ZenitState {
-  const userAlice: User = { id: 'user_alice', name: 'Alice' };
-  const userBob: User = { id: 'user_bob', name: 'Bob' };
-  const userCharlie: User = { id: 'user_charlie', name: 'Charlie' };
+  const userAlice: User = { id: 'user_alice', name: 'Alice', email: 'alice@zenit.dev' };
+  const userBob: User = { id: 'user_bob', name: 'Bob', email: 'bob@zenit.dev' };
+  const userCharlie: User = { id: 'user_charlie', name: 'Charlie', email: 'charlie@zenit.dev' };
 
   const projectId = 'proj_zenit';
   const t = nowIso();

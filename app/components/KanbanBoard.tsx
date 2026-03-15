@@ -46,13 +46,16 @@ export default function KanbanBoard() {
             </span>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto pb-2">
+          <div className="space-y-3">
             {issues
               .filter(issue => issue.status === column.status)
               .map(issue => (
-                <div key={issue.id} className="shrink-0 w-72">
-                  <TaskCard issue={issue} users={users} onDragStart={() => handleDragStart(issue)} />
-                </div>
+                <TaskCard
+                  key={issue.id}
+                  issue={issue}
+                  users={users}
+                  onDragStart={() => handleDragStart(issue)}
+                />
               ))}
           </div>
         </div>

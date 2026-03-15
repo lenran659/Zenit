@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Settings, Circle, LayoutDashboard } from "lucide-react";
+import { Home, Settings, Circle, LayoutDashboard, MessageSquareText } from "lucide-react";
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import ThemeToggle from "@/components/theme-toggle";
@@ -28,6 +28,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   }, []);
 
   const navItems = [
+    { icon: MessageSquareText, label: "AI 对话", href: "/chat" },
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: Home, label: "项目", href: "/projects" },
     { icon: Settings, label: "设置", href: "/settings" },
