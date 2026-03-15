@@ -22,6 +22,25 @@ services:
     networks:
       - zenit-network
 
+  # 后端 API（自部署版：Node + Drizzle）
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zenit-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - zenit-network
+
   # Next.js 前端
   frontend:
     build:
@@ -31,40 +50,17 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public}
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:${BACKEND_PORT:-3001}}
       # AI 配置（可选）
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      backend:
+        condition: service_started
     networks:
       - zenit-network
-    # 添加迁移命令（首次启动时运行）
-    command: >
-      sh -c "npx drizzle-kit migrate && pnpm start"
-
-  # 可选：如果你有后端 API 服务，取消注释下面部分
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: zenit-backend
-  #   restart: unless-stopped
-  #   environment:
-  #     - NODE_ENV=production
-  #     - DATABASE_URL=postgresql://${POSTGRES_USER:-zenit}:${POSTGRES_PASSWORD:-zenit_password}@postgres:5432/${POSTGRES_DB:-zenit_db}?schema=public
-  #     - PORT=3001
-  #   ports:
-  #     - "${BACKEND_PORT:-3001}:3001"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   networks:
-  #     - zenit-network
 
 volumes:
   postgres_data:
