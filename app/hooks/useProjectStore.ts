@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import type { Issue, IssueStatus, Priority, Project, User, Cycle } from '../types';
+import { projectsApi, issuesApi } from '../../api';
 
 type ZenitState = {
   users: User[];
@@ -12,6 +13,10 @@ type ZenitState = {
 };
 
 const STORAGE_KEY = 'zenit:mvp:v1';
+
+function hasBackendApi() {
+  return Boolean(process.env.NEXT_PUBLIC_API_URL);
+}
 
 function nowIso() {
   return new Date().toISOString();
@@ -128,11 +133,62 @@ function seedState(): ZenitState {
 }
 
 export function useProjectStore() {
-  const [state, setState] = useState<ZenitState>(() => readState() ?? seedState());
+  const [state, setState] = useState<ZenitState>(() => {
+    if (hasBackendApi()) {
+      // Backend mode: start with empty shell; data will be fetched.
+      return {
+        users: [{ id: 'user_alice', name: 'Alice', email: 'alice@zenit.dev' }],
+        projects: [],
+        cycles: [],
+        issues: [],
+        currentProjectId: null,
+      };
+    }
+    return readState() ?? seedState();
+  });
 
   useEffect(() => {
+    if (hasBackendApi()) return;
     writeState(state);
   }, [state]);
+
+  // Backend mode: initial load
+  useEffect(() => {
+    if (!hasBackendApi()) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const [projects] = await Promise.all([projectsApi.listProjects()]);
+
+        if (cancelled) return;
+
+        const nextCurrentProjectId = projects[0]?.id ?? null;
+        setState(prev => ({
+          ...prev,
+          projects,
+          currentProjectId: prev.currentProjectId ?? nextCurrentProjectId,
+        }));
+
+        const targetProjectId = nextCurrentProjectId;
+        if (targetProjectId) {
+          const issues = await issuesApi.listIssues(targetProjectId);
+          if (cancelled) return;
+          setState(prev => ({ ...prev, issues }));
+        }
+      } catch {
+        // If backend is not reachable, fall back to MVP local state
+        if (cancelled) return;
+        const fallback = readState() ?? seedState();
+        setState(fallback);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const currentProject = useMemo(() => {
     if (!state.currentProjectId) return null;
@@ -144,7 +200,7 @@ export function useProjectStore() {
     return state.issues.filter(i => i.projectId === state.currentProjectId);
   }, [state.currentProjectId, state.issues]);
 
-  const addIssue = (issue: {
+  const addIssue = async (issue: {
     title: string;
     descriptionMarkdown: string;
     priority: Priority;
@@ -157,6 +213,22 @@ export function useProjectStore() {
     endDate?: string;
   }) => {
     if (!state.currentProjectId) return;
+
+    if (hasBackendApi()) {
+      const created = await issuesApi.createIssue(state.currentProjectId, {
+        title: issue.title,
+        descriptionMarkdown: issue.descriptionMarkdown,
+        priority: issue.priority,
+        status: issue.status,
+        type: issue.type,
+        assigneeId: issue.assigneeId,
+        watcherIds: issue.watcherIds ?? [],
+      });
+
+      setState(prev => ({ ...prev, issues: [created, ...prev.issues] }));
+      return;
+    }
+
     const t = nowIso();
     const newIssue: Issue = {
       id: createId('iss'),
@@ -177,7 +249,16 @@ export function useProjectStore() {
     setState(prev => ({ ...prev, issues: [...prev.issues, newIssue] }));
   };
 
-  const updateIssueStatus = (issueId: string, status: IssueStatus) => {
+  const updateIssueStatus = async (issueId: string, status: IssueStatus) => {
+    if (hasBackendApi()) {
+      const updated = await issuesApi.updateIssueStatus(issueId, status);
+      setState(prev => ({
+        ...prev,
+        issues: prev.issues.map(i => (i.id === issueId ? { ...i, ...updated } : i)),
+      }));
+      return;
+    }
+
     setState(prev => ({
       ...prev,
       issues: prev.issues.map(i => (i.id === issueId ? { ...i, status, updatedAt: nowIso() } : i)),
@@ -206,9 +287,34 @@ export function useProjectStore() {
 
   const setCurrentProjectId = useCallback((projectId: string) => {
     setState(prev => ({ ...prev, currentProjectId: projectId }));
+    if (hasBackendApi()) {
+      // Load issues for newly selected project
+      issuesApi
+        .listIssues(projectId)
+        .then((issues) => {
+          setState(prev => ({ ...prev, issues }));
+        })
+        .catch(() => {
+          // ignore
+        });
+    }
   }, []);
 
-  const createProject = (input: { key: string; name: string; description: string; ownerId?: string }) => {
+  const createProject = async (input: { key: string; name: string; description: string; ownerId?: string }) => {
+    if (hasBackendApi()) {
+      const created = await projectsApi.createProject({
+        key: input.key,
+        name: input.name,
+        description: input.description,
+      });
+      setState(prev => ({
+        ...prev,
+        projects: [created, ...prev.projects],
+        currentProjectId: created.id,
+      }));
+      return;
+    }
+
     const t = nowIso();
     const ownerId = input.ownerId ?? state.users[0]?.id;
     if (!ownerId) return;

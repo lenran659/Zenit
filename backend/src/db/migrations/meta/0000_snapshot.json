@@ -1,5 +1,5 @@
 {
-  "id": "4ff2ba0b-b92b-4ba1-83f6-4073a970e098",
+  "id": "4309ae54-7532-4b96-97e7-1d9056580ad1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,13 +10,13 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
         "project_id": {
           "name": "project_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -26,11 +26,20 @@
           "primaryKey": false,
           "notNull": true
         },
-        "description": {
-          "name": "description",
+        "description_markdown": {
+          "name": "description_markdown",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "type": {
+          "name": "type",
+          "type": "issue_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'issue'"
         },
         "status": {
           "name": "status",
@@ -48,17 +57,24 @@
           "notNull": true,
           "default": "'medium'"
         },
-        "creator_id": {
-          "name": "creator_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "assignee_id": {
           "name": "assignee_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "watcher_ids": {
+          "name": "watcher_ids",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'"
+        },
+        "creator_id": {
+          "name": "creator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -102,19 +118,6 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
-        },
-        "issues_assignee_id_users_id_fk": {
-          "name": "issues_assignee_id_users_id_fk",
-          "tableFrom": "issues",
-          "tableTo": "users",
-          "columnsFrom": [
-            "assignee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -129,8 +132,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -143,7 +152,8 @@
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "status": {
           "name": "status",
@@ -158,6 +168,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "member_ids": {
+          "name": "member_ids",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'"
         },
         "created_at": {
           "name": "created_at",
@@ -191,7 +208,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "projects_key_unique": {
+          "name": "projects_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "key"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -206,11 +231,17 @@
           "primaryKey": true,
           "notNull": true
         },
-        "username": {
-          "name": "username",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -230,15 +261,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_username_unique": {
-          "name": "users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -249,21 +272,28 @@
       "name": "issue_priority",
       "schema": "public",
       "values": [
-        "low",
-        "medium",
+        "urgent",
         "high",
-        "urgent"
+        "medium",
+        "low"
       ]
     },
     "public.issue_status": {
       "name": "issue_status",
       "schema": "public",
       "values": [
+        "backlog",
         "todo",
         "in_progress",
-        "review",
-        "done",
-        "cancelled"
+        "done"
+      ]
+    },
+    "public.issue_type": {
+      "name": "issue_type",
+      "schema": "public",
+      "values": [
+        "issue",
+        "bug"
       ]
     },
     "public.project_status": {
