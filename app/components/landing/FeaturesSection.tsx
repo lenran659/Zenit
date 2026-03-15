@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
+import { CalendarDays, ShieldCheck, Workflow } from 'lucide-react';
 
 type MotionProps = Record<string, unknown>;
 
@@ -13,6 +14,42 @@ type FeaturesSectionProps = {
 };
 
 export default function FeaturesSection({ viewFadeUp, cardBase, panelBase }: FeaturesSectionProps) {
+  const items = [
+    {
+      name: 'Issue 到交付，一条线走到底',
+      description: '从收集、拆分、排期到验收，全程可追踪，减少跨工具切换。',
+      Icon: Workflow,
+      href: '/projects',
+      cta: '开始使用',
+      className: 'md:col-span-1',
+      background: (
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+      ),
+    },
+    {
+      name: '看板与时间线同步',
+      description: '拖拽调整节奏，时间线自动对齐，让计划成为可执行的节奏表。',
+      Icon: CalendarDays,
+      href: '/projects',
+      cta: '查看项目',
+      className: 'md:col-span-1',
+      background: (
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,theme(colors.primary/0.12),transparent_55%)]" />
+      ),
+    },
+    {
+      name: '极简权限与空间',
+      description: '项目空间天然隔离，避免“一个工作区装下全公司”的混乱。',
+      Icon: ShieldCheck,
+      href: '/projects',
+      cta: '进入控制台',
+      className: 'md:col-span-1',
+      background: (
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-primary/5 to-primary/10" />
+      ),
+    },
+  ];
+
   return (
     <section id="features" aria-labelledby="features-title" className="mt-16">
       <motion.div {...viewFadeUp(0.02)} className="max-w-2xl">
@@ -24,47 +61,25 @@ export default function FeaturesSection({ viewFadeUp, cardBase, panelBase }: Fea
         </p>
       </motion.div>
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          {
-            title: 'Issue 到交付，一条线走到底',
-            desc: '从收集、拆分、排期到验收，全程可追踪，减少跨工具切换。',
-          },
-          {
-            title: '看板与时间线同步',
-            desc: '拖拽调整节奏，时间线自动对齐，让计划成为可执行的节奏表。',
-          },
-          {
-            title: '极简权限与空间',
-            desc: '项目空间天然隔离，避免“一个工作区装下全公司”的混乱。',
-          },
-        ].map((f, idx) => (
-          <motion.div key={f.title} {...viewFadeUp(0.02 + idx * 0.04)}>
-            <Card className={'h-full ' + cardBase}>
-              <CardHeader>
-                <CardTitle className="text-base">{f.title}</CardTitle>
-                <CardDescription className="leading-relaxed">{f.desc}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className={'h-10 w-10 flex items-center justify-center ' + panelBase}>
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5 text-foreground"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="M12 5l7 7-7 7" />
-                  </svg>
+      <BentoGrid className="mt-8 grid-cols-1 gap-4 md:grid-cols-3">
+        {items.map((item, idx) => (
+          <motion.div key={item.name} {...viewFadeUp(0.02 + idx * 0.04)} className="h-full">
+            <BentoCard
+              name={item.name}
+              description={item.description}
+              Icon={item.Icon}
+              href={item.href}
+              cta={item.cta}
+              background={
+                <div className={'relative h-full w-full ' + panelBase + ' ' + cardBase}>
+                  {item.background}
                 </div>
-              </CardContent>
-            </Card>
+              }
+              className={item.className}
+            />
           </motion.div>
         ))}
-      </div>
+      </BentoGrid>
     </section>
   );
 }

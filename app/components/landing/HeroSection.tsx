@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { HeroVideoDialog } from '@/components/ui/hero-video-dialog';
 
 type MotionProps = Record<string, unknown>;
 
@@ -26,6 +27,32 @@ export default function HeroSection({
   onLogin,
   onProjects,
 }: HeroSectionProps) {
+  const thumbnailSrc =
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="hsl(238 84% 66% / .18)"/>
+            <stop offset="1" stop-color="hsl(262 83% 58% / .10)"/>
+          </linearGradient>
+          <radialGradient id="r" cx="50%" cy="35%" r="60%">
+            <stop offset="0" stop-color="hsl(238 84% 66% / .25)"/>
+            <stop offset="1" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <rect width="1920" height="1080" rx="32" fill="hsl(0 0% 100% / 0)"/>
+        <rect x="0" y="0" width="1920" height="1080" fill="url(#g)"/>
+        <rect x="0" y="0" width="1920" height="1080" fill="url(#r)"/>
+        <g opacity="0.18" fill="hsl(240 10% 3.9%)">
+          <rect x="140" y="190" width="520" height="96" rx="18"/>
+          <rect x="140" y="322" width="520" height="96" rx="18"/>
+          <rect x="140" y="454" width="520" height="96" rx="18"/>
+          <rect x="720" y="190" width="1060" height="560" rx="26"/>
+        </g>
+      </svg>`
+    );
+
   return (
     <section id="hero" aria-labelledby="hero-title" className="mt-14">
       <div className="max-w-3xl mx-auto text-center">
@@ -120,13 +147,13 @@ export default function HeroSection({
                       ))}
                     </div>
 
-                    <div className={'mt-4 relative p-6 ' + panelStrong}>
-                      <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                        <div className="h-14 w-14 rounded-full bg-red-500 shadow-lg grid place-items-center">
-                          <div className="ml-1 h-0 w-0 border-y-10 border-y-transparent border-l-16 border-l-white" />
-                        </div>
-                      </div>
-                      <div className="h-28 opacity-60" />
+                    <div className={'mt-4 relative p-3 sm:p-4 ' + panelStrong}>
+                      <HeroVideoDialog
+                        animationStyle="from-center"
+                        videoSrc="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                        thumbnailSrc={thumbnailSrc}
+                        thumbnailAlt="Zenit product demo"
+                      />
                     </div>
                   </div>
                 </div>
