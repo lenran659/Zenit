@@ -1,0 +1,179 @@
+{
+  "id": "0000_little_nitro",
+  "prevId": "",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "public",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        }
+      }
+    },
+    "public.projects": {
+      "name": "projects",
+      "schema": "public",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "project_status",
+          "notNull": true,
+          "default": "'active'"
+        },
+        "owner_id": {
+          "name": "owner_id",
+          "type": "text",
+          "notNull": true
+        },
+        "member_ids": {
+          "name": "member_ids",
+          "type": "text",
+          "notNull": true,
+          "default": "'[]'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "uniqueConstraints": {
+        "projects_key_unique": {
+          "name": "projects_key_unique",
+          "columns": [
+            "key"
+          ]
+        }
+      }
+    },
+    "public.issues": {
+      "name": "issues",
+      "schema": "public",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "text",
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true
+        },
+        "description_markdown": {
+          "name": "description_markdown",
+          "type": "text",
+          "notNull": true,
+          "default": "''"
+        },
+        "type": {
+          "name": "type",
+          "type": "issue_type",
+          "notNull": true,
+          "default": "'issue'"
+        },
+        "status": {
+          "name": "status",
+          "type": "issue_status",
+          "notNull": true,
+          "default": "'todo'"
+        },
+        "priority": {
+          "name": "priority",
+          "type": "issue_priority",
+          "notNull": true,
+          "default": "'medium'"
+        },
+        "assignee_id": {
+          "name": "assignee_id",
+          "type": "text"
+        },
+        "watcher_ids": {
+          "name": "watcher_ids",
+          "type": "text",
+          "notNull": true,
+          "default": "'[]'"
+        },
+        "creator_id": {
+          "name": "creator_id",
+          "type": "text",
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "notNull": true,
+          "default": "now()"
+        }
+      }
+    }
+  }
+}
